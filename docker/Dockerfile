@@ -1,4 +1,4 @@
-FROM php:8.0.2-fpm
+FROM php:7.3-fpm
 
 # Arguments defined in docker-compose.yml
 ARG user
@@ -21,6 +21,10 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mysqli mbstring exif pcntl bcmath gd soap zip
 
+# install and enable xdebug
+RUN pecl install xdebug \
+	&& docker-php-ext-enable xdebug
+
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -33,3 +37,6 @@ RUN mkdir -p /home/$user/.composer && \
 WORKDIR /var/www
 
 USER $user
+
+
+
